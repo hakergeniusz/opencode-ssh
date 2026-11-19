@@ -1,0 +1,33 @@
+{
+  "name": "opencode-ssh",
+  "version": "0.1.0",
+  "description": "Native OpenCode V2 plugin: run read, write, edit, bash, ls, grep and find on a remote machine over SSH, mapping the local working directory onto the remote one.",
+  "private": false,
+  "type": "module",
+  "license": "MIT",
+  "keywords": [
+    "opencode",
+    "opencode-plugin",
+    "ssh",
+    "remote",
+    "tools"
+  ],
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "files": [
+    "src"
+  ],
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "bun test test/units.test.ts"
+  },
+  "dependencies": {
+    "@opencode/plugin": "latest"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "@types/node": "latest",
+    "typescript": "latest"
+  }
+}
