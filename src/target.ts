@@ -1,5 +1,5 @@
 /**
- * Parsing for the SSH target spec. Ported from pi-ssh unchanged.
+ * Parsing for the SSH target spec.
  *
  * Accepted forms:
  *   user@host                 -> remote home directory

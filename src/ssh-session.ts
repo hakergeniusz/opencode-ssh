@@ -1,7 +1,7 @@
 /**
  * The SSH transport: one multiplexed connection to a remote host, plus the
  * capability probe used to decide how `grep`, `find` and image detection are
- * executed there. Ported from pi-ssh unchanged (no pi runtime dependency).
+ * executed there.
  *
  * `ControlMaster=auto` makes the first call the master and later calls cheap
  * slaves, so a turn with dozens of small tool calls avoids repeated handshakes.
@@ -28,9 +28,9 @@ export interface SshSessionOptions {
   readonly host: string
   /** Remote directory to start in. Defaults to the remote home directory. */
   readonly dir?: string
-  /** Extra `ssh` arguments, e.g. from PI_SSH_OPTIONS. */
+  /** Extra `ssh` arguments, e.g. from OPENCODE_SSH_OPTIONS. */
   readonly extraOptions?: readonly string[]
-  /** Shell that runs every remote command. Defaults to PI_SSH_SHELL, then bash. */
+  /** Shell that runs every remote command. Defaults to OPENCODE_SSH_SHELL, then bash. */
   readonly shell?: string
   /** Directory holding the control socket. Created on demand. */
   readonly controlDir?: string
@@ -79,7 +79,7 @@ export class SshSession {
   readonly cwd: string
   readonly uname: string
   readonly capabilities: RemoteCapabilities
-  /** Shell every remote command runs under (bash unless PI_SSH_SHELL says otherwise). */
+  /** Shell every remote command runs under (bash unless OPENCODE_SSH_SHELL says otherwise). */
   readonly shell: string
 
   private readonly extraOptions: readonly string[]
@@ -102,7 +102,7 @@ export class SshSession {
 
   /** Connect, resolve the remote working directory, and probe remote tooling. */
   static async open(options: SshSessionOptions, signal?: AbortSignal): Promise<SshSession> {
-    const extraOptions = options.extraOptions ?? splitOptionString(process.env.PI_SSH_OPTIONS ?? "")
+    const extraOptions = options.extraOptions ?? splitOptionString(process.env.OPENCODE_SSH_OPTIONS ?? "")
     const controlDir = options.controlDir ?? createControlDir(options.host)
     const probe = new SshSession(options, options.dir ?? "~", "", EMPTY_CAPABILITIES, controlDir, extraOptions)
 
@@ -110,7 +110,7 @@ export class SshSession {
       `${cdCommand(options.dir ?? "~")} || exit 70`,
       "pwd -P",
       "uname -sr 2>/dev/null || echo unknown",
-      'for tool in rg fd file; do command -v "$tool" >/dev/null 2>&1 && echo "pi-ssh-tool:$tool"; done',
+      'for tool in rg fd file; do command -v "$tool" >/dev/null 2>&1 && echo "opencode-ssh-tool:$tool"; done',
     ].join("; ")
 
     let probeResult: RemoteResult
@@ -135,7 +135,7 @@ export class SshSession {
       if (result.exitCode === 127) {
         probe.close()
         throw new SshError(
-          `Remote shell not usable on ${options.host}: ${probe.shell} (${detail}). Set PI_SSH_SHELL to a shell that exists there.`,
+          `Remote shell not usable on ${options.host}: ${probe.shell} (${detail}). Set OPENCODE_SSH_SHELL to a shell that exists there.`,
           result.stderr,
           result.exitCode,
         )
@@ -395,7 +395,7 @@ export class SshSession {
   }
 }
 
-const TOOL_MARKER = "pi-ssh-tool:"
+const TOOL_MARKER = "opencode-ssh-tool:"
 const EMPTY_CAPABILITIES: RemoteCapabilities = { rg: false, fd: false, file: false }
 
 function describeTransportFailure(stderr: string, exitCode: number | null): string {
@@ -410,7 +410,7 @@ function createControlDir(host: string): string {
   // Unique per session so concurrent sessions cannot rip each other's socket away.
   const dir = join(
     tmpdir(),
-    `pi-ssh-${process.getuid?.() ?? 0}-${digest}-${process.pid}-${randomBytes(4).toString("hex")}`,
+    `opencode-ssh-${process.getuid?.() ?? 0}-${digest}-${process.pid}-${randomBytes(4).toString("hex")}`,
   )
   mkdirSync(dir, { recursive: true, mode: 0o700 })
   try {

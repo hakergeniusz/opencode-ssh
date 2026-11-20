@@ -4,7 +4,7 @@
  * `ssh host cmd arg` concatenates its arguments with spaces and lets the remote
  * login shell parse them, so every interpolated value has to be quoted here.
  * JSON.stringify is not enough: double quotes still expand `$`, backticks and
- * backslashes. Ported from pi-ssh unchanged (no pi runtime dependency).
+ * backslashes.
  */
 
 /** Quote a single value for safe interpolation into a remote POSIX shell command. */
@@ -20,11 +20,11 @@ export function shellJoin(values: readonly string[]): string {
   return values.map(shellQuote).join(" ")
 }
 
-/** Shell used for remote commands: bash by default, overridable with PI_SSH_SHELL. */
+/** Shell used for remote commands: bash by default, overridable with OPENCODE_SSH_SHELL. */
 export const DEFAULT_REMOTE_SHELL = "bash"
 
 export function resolveRemoteShell(env: NodeJS.ProcessEnv = process.env): string {
-  const configured = env.PI_SSH_SHELL?.trim()
+  const configured = env.OPENCODE_SSH_SHELL?.trim()
   return configured ? configured : DEFAULT_REMOTE_SHELL
 }
 
@@ -50,7 +50,7 @@ export function cdCommand(dir: string): string {
 
 /**
  * Split a user-supplied option string into argv entries. Understands single and
- * double quotes and backslash escapes, enough for `PI_SSH_OPTIONS="-p 2222 -i key"`.
+ * double quotes and backslash escapes, enough for `OPENCODE_SSH_OPTIONS="-p 2222 -i key"`.
  */
 export function splitOptionString(raw: string): string[] {
   const out: string[] = []

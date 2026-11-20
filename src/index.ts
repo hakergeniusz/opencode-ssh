@@ -1,13 +1,11 @@
 /**
- * opencode-ssh — native OpenCode V2 port of the `pi-ssh` extension.
+ * opencode-ssh — native OpenCode V2 plugin.
  *
  * When connected, the `read`, `write`, `edit`, `bash`, `ls`, `grep` and `find`
  * tools are registered as OpenCode tools that execute on the remote host over
  * SSH. The local project directory is mapped onto the remote working directory,
  * so the model keeps using familiar local paths. When disconnected the tools
- * are not registered at all, so OpenCode's stock tools remain in charge (this
- * is the OpenCode equivalent of pi-ssh hiding its `ls`/`grep`/`find` tools
- * until a session is active).
+ * are not registered at all, so OpenCode's stock tools remain in charge.
  *
  * Connection is configured through plugin options (`target`, `allowLocal`,
  * `shell`, `sshOptions`) or changed at runtime with the `/ssh` command.
@@ -130,7 +128,7 @@ export default Plugin.define({
       session: null,
       mapper: null,
       localCwd,
-      allowLocalBash: options.allowLocal === true || process.env.PI_SSH_ALLOW_LOCAL === "1",
+      allowLocalBash: options.allowLocal === true || process.env.OPENCODE_SSH_ALLOW_LOCAL === "1",
       lastSpec: firstString(options.target, options.ssh, options.host),
       error: optionError,
       shell: typeof options.shell === "string" && options.shell.trim() ? options.shell.trim() : undefined,
@@ -496,7 +494,7 @@ export default Plugin.define({
     })
 
     // Connect on load when a target was supplied through plugin options / env.
-    const initialSpec = firstString(options.target, options.ssh, options.host, process.env.PI_SSH_TARGET)
+    const initialSpec = firstString(options.target, options.ssh, options.host, process.env.OPENCODE_SSH_TARGET)
     if (initialSpec) await connect(initialSpec)
 
     return () => {

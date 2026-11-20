@@ -1,11 +1,8 @@
 /**
- * Remote `ls`, `grep` and `find`, adapted from pi-ssh's `remote-search.ts`.
+ * Remote `ls`, `grep` and `find`.
  *
- * pi's grep/find shell out to local ripgrep and fd, so the operations seam was
- * not enough; these are standalone tool implementations that run the search on
- * the remote side and rewrite results into the local path space. The pi-specific
- * `defineTool`/`AgentToolResult` wrappers are replaced by plain string returns,
- * and `truncateHead`/`formatSize` are reimplemented locally.
+ * These are standalone tool implementations that run the search on the remote
+ * side and rewrite results into the local path space.
  */
 
 import nodePath from "node:path"

@@ -1,5 +1,5 @@
 /**
- * Local <-> remote path translation. Ported from pi-ssh unchanged.
+ * Local <-> remote path translation.
  *
  * Tool paths are resolved against the local working directory. In SSH mode that
  * directory is mapped onto the remote working directory; everything else is

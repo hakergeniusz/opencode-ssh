@@ -1,7 +1,6 @@
 /**
  * Unit tests for the pure helpers: target parsing, path translation, shell
- * quoting and search-output mapping. Ported from pi-ssh's `units.test.ts`;
- * these modules have no pi/OpenCode runtime dependency.
+ * quoting and search-output mapping.
  *
  * Run with: bun test
  */
@@ -107,10 +106,10 @@ describe("remote shell wrapper", () => {
 rm -rf /'`)
   })
 
-  test("defaults to bash and honours PI_SSH_SHELL", () => {
+  test("defaults to bash and honours OPENCODE_SSH_SHELL", () => {
     expect(resolveRemoteShell({})).toBe("bash")
-    expect(resolveRemoteShell({ PI_SSH_SHELL: "  " })).toBe("bash")
-    expect(resolveRemoteShell({ PI_SSH_SHELL: "/bin/zsh" })).toBe("/bin/zsh")
+    expect(resolveRemoteShell({ OPENCODE_SSH_SHELL: "  " })).toBe("bash")
+    expect(resolveRemoteShell({ OPENCODE_SSH_SHELL: "/bin/zsh" })).toBe("/bin/zsh")
   })
 })
 

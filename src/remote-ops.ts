@@ -1,10 +1,8 @@
 /**
  * Remote implementations of the file and shell tool operations.
  *
- * Adapted from pi-ssh's `remote-ops.ts`: the pi `ReadOperations`/`WriteOperations`
- * interfaces and `createLocalBashOperations` are gone, replaced by plain async
- * functions that the OpenCode tool executors call directly. Everything else
- * (path mapping, POSIX quoting, stdin delivery, remote abort) is preserved.
+ * Plain async functions used by the OpenCode tool executors for path mapping,
+ * POSIX quoting, stdin delivery, and remote abort handling.
  */
 
 import { spawn } from "node:child_process"
